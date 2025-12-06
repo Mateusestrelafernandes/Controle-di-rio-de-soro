@@ -1,0 +1,5 @@
+{
+  "name": "Gestor de Volumes de Tanques",
+  "description": "Aplicação para controle e registro de volumes, tipos e datas de tanques (B1-B9, S1-S6) com funcionalidade de cópia formatada.",
+  "requestFramePermissions": []
+}
