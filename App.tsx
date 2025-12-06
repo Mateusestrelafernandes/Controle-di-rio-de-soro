@@ -40,6 +40,7 @@ const getInitialState = (): TankEntry[] => {
       volume: '',
       type: type,
       date: date,
+      date2: '', // Initialize second date as empty
       isSelected: false,
     };
   });
@@ -54,7 +55,7 @@ const App: React.FC = () => {
       prev.map((entry) => {
         if (entry.id === id) {
           // If editing volume/type/date, auto-select the row for convenience
-          const shouldAutoSelect = field === 'volume' || field === 'type' || field === 'date';
+          const shouldAutoSelect = field === 'volume' || field === 'type' || field === 'date' || field === 'date2';
           return { ...entry, [field]: value, isSelected: shouldAutoSelect ? true : entry.isSelected };
         }
         return entry;
@@ -77,15 +78,27 @@ const App: React.FC = () => {
     }
 
     const listText = selectedEntries.map((entry) => {
-      // Parse date from YYYY-MM-DD to DD/MM
-      const [year, month, day] = entry.date.split('-');
-      const formattedDate = `${day}/${month}`;
+      // Parse date 1 from YYYY-MM-DD to DD/MM
+      const [year1, month1, day1] = entry.date.split('-');
+      let dateStr = `${day1}/${month1}`;
+
+      // Handle second date if present
+      if (entry.date2) {
+        const [year2, month2, day2] = entry.date2.split('-');
+        if (month1 === month2) {
+          // Same month: "05 e 06/12"
+          dateStr = `${day1} e ${day2}/${month1}`;
+        } else {
+          // Different month: "30/11 e 01/12"
+          dateStr = `${day1}/${month1} e ${day2}/${month2}`;
+        }
+      }
       
       const typeLower = entry.type.toLowerCase();
       
       // Format: ID VOLUME TYPE DATE
       // Example: B1 15.000 cru 05/12
-      return `${entry.id} ${entry.volume || '0'} ${typeLower} ${formattedDate}`;
+      return `${entry.id} ${entry.volume || '0'} ${typeLower} ${dateStr}`;
     }).join('\n');
 
     // Determine greeting based on current hour
